@@ -13,8 +13,8 @@
 #     executable.
 #
 #     -l [logfile]
-#         If provided, log the completed task and timestamp to _logfile_. The
-#         default is the POMLOG environment variable, if set. Otherwise the
+#         If provided, log the completed task and timestamp to [logfile]. The
+#         default is the POMLOG environment variable, if set. Otherwise, the
 #         default is $HOME/pom.log.
 #
 # by @tobym (Toby Matejovsky) 2012-09-19.
@@ -62,9 +62,32 @@ function ring_bell {
   which -s tput && tput bel
 }
 
+# Print short version of help.
+function print_usage {
+  echo "Usage: $0 message [-l [logfile]]"
+}
+
 # Print help.
 function print_help {
-  echo "Usage: $0 message [-l [logfile]]"
+  help_text='
+  NAME
+      pom -- a minimalist pomodoro-style time-tracker.
+
+  SYNOPSIS
+      pom message [-l [logfile]]
+
+  DESCRIPTION
+      The pom utility counts down for 20 minutes as you work on a task. It will
+      give an audible alert at 5 and 0 minutes if `say` is in the path and
+      executable.
+
+      -l [logfile]
+          If provided, log the completed task and timestamp to [logfile]. The
+          default is the POMLOG environment variable, if set. Otherwise, the
+          default is $HOME/pom.log.
+'
+
+  echo "$help_text"
 }
 
 # Main function.
@@ -96,10 +119,10 @@ then
   print_help && exit 0
 elif [ -z "$1" ]
 then
-  print_help && exit 1
+  print_usage && exit 1
 elif [ ! -z "$2" ] && [ "$2" != "-l" ]
 then
-  print_help && exit 1
+  print_usage && exit 1
 else
   run_main
 fi
