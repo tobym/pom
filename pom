@@ -20,7 +20,7 @@
 # by @tobym (Toby Matejovsky) 2012-09-19.
 
 # Runtime of a single session.
-time_in_minutes=20
+time_in_minutes=25
 
 # Print current status.
 # First argument is number of minutes elapsed.
