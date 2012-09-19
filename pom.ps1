@@ -1,6 +1,6 @@
 param(
 	$goal,
-	$shouldLog,
+	[switch]$l,
 	$POMLOG = $env:pomlog,
 	[switch]$h
 )
@@ -35,9 +35,8 @@ $script_name = $MyInvocation.MyCommand.Name
 function print_status ($minutes) {
   clear
   $minutes_remaining=$(($time_in_minutes - $minutes))
-  # $log_line=$(test -n "$logfile" && echo -n " ($logfile)" || echo -n "")
-  # echo "Pomodoro$log_line: $minutes_remaining minutes remaining to complete: $goal"
-  echo "Pomodoro: $minutes_remaining minutes remaining to complete: $goal"
+  $log_line=$(if($logfile) { " ($logfile)" } else { "" })
+  echo "Pomodoro$log_line: $minutes_remaining minutes remaining to complete: $goal"
   if ( $minutes_remaining -eq 5 ) {
       safe_say "$minutes_remaining minutes remaining in your pomadoro"
   }
@@ -49,10 +48,9 @@ function finish {
   $msg="$time_in_minutes minute pomodoro done at $(date) for: $goal"
   echo $msg
 
-  # if [ ! -z $logfile ]
-  # then
-    # echo $msg >> $logfile
-  # fi
+  if ( $logfile ) {
+    echo $msg >> $logfile
+  }
 
   $break_msg="Pomadoro complete. Take a 5 minute break."
   echo $break_msg
@@ -66,7 +64,7 @@ function safe_say($text) {
 	$synthesizer = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
 
 	# This line converts the text to speech
-	$synthesizer.Speak($text)
+	$synthesizer.SpeakAsync($text)
 
 }
 
@@ -105,25 +103,25 @@ function print_help {
 
 # Main function.
 function run_main {
-  for($minute=1; $minute -le $time_in_minutes; $minute++){
-    print_status $(($minute))
+  1..$time_in_minutes | % {
+    print_status $(($_))
     Start-Sleep -s 60
   }
   finish
 }
 
 # Parse options, and run main.
-if ( $should_log -eq "-l" ) {
-  if(File-Exists($POMLOG)) {
+if ( $l ) {
+  if($POMLOG) {
     $logfile=$POMLOG
   } else {
-    $logfile=Path-Join($env:home, 'pom.log')
+    $logfile=Join-Path $env:home 'pom.log'
   }
 }
 
 if($h -or $goal -eq "--help") {
   print_help 
-  return 0
+  return
 } else {
   run_main
 }
