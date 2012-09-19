@@ -1,0 +1,136 @@
+param(
+	$message = $(throw("message required"))
+)
+
+#
+# NAME
+#     pom -- a minimalist pomodoro-style time-tracker.
+#
+# SYNOPSIS
+#     pom message [-l [logfile]]
+#
+# DESCRIPTION
+#     The pom utility counts down for 20 minutes as you work on a task. It will
+#     give an audible alert at 5 and 0 minutes if `say` is in the path and
+#     executable.
+#
+#     -l [logfile]
+#         If provided, log the completed task and timestamp to [logfile]. The
+#         default is the POMLOG environment variable, if set. Otherwise, the
+#         default is $HOME/pom.log.
+#
+# by @tobym (Toby Matejovsky) 2012-09-19.
+# ported to powershell by @luv2code (Matthew Taylor) 2012-09-19
+
+# Runtime of a single session.
+$time_in_minutes=25
+
+
+# Print current status.
+# First argument is number of minutes elapsed.
+function print_status ($minutes) {
+  clear
+  $minutes_remaining=$(($time_in_minutes - $minutes))
+  # $log_line=$(test -n "$logfile" && echo -n " ($logfile)" || echo -n "")
+  # echo "Pomodoro$log_line: $minutes_remaining minutes remaining to complete: $goal"
+  echo "Pomodoro: $minutes_remaining minutes remaining to complete: $goal"
+  if ( $minutes_remaining -eq 5 ) {
+      safe_say "$minutes_remaining minutes remaining in your pomadoro"
+  }
+}
+
+# Print final status. Optionally log this event.
+function finish {
+  clear
+  $msg="$time_in_minutes minute pomodoro done at $(date) for: $goal"
+  echo $msg
+
+  # if [ ! -z $logfile ]
+  # then
+    # echo $msg >> $logfile
+  # fi
+
+  $break_msg="Pomadoro complete. Take a 5 minute break."
+  echo $break_msg
+  safe_say "$break_msg" # || ring_bell
+}
+
+# Audibly say something, if possible.
+function safe_say($text) {
+	Add-Type -AssemblyName System.Speech
+	$synthesizer = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
+
+	# This line converts the text to speech
+	$synthesizer.Speak($text)
+
+}
+finish
+# # Try to ring the terminal bell.
+# function ring_bell {
+  # which -s tput && tput bel
+# }
+
+# # Print short version of help.
+# function print_usage {
+  # echo "Usage: $0 message [-l [logfile]]"
+# }
+
+# # Print help.
+# function print_help {
+  # help_text='
+  # NAME
+      # pom -- a minimalist pomodoro-style time-tracker.
+
+  # SYNOPSIS
+      # pom message [-l [logfile]]
+
+  # DESCRIPTION
+      # The pom utility counts down for 20 minutes as you work on a task. It will
+      # give an audible alert at 5 and 0 minutes if `say` is in the path and
+      # executable.
+
+      # -l [logfile]
+          # If provided, log the completed task and timestamp to [logfile]. The
+          # default is the POMLOG environment variable, if set. Otherwise, the
+          # default is $HOME/pom.log.
+# '
+
+  # echo "$help_text"
+# }
+
+# # Main function.
+# function run_main {
+  # for minute in `seq $time_in_minutes`
+  # do
+    # print_status $(($minute-1))
+    # sleep 60
+  # done
+  # finish
+# }
+
+# # Parse options, and run main.
+# goal=$1
+# should_log=$2
+# logfile=$3
+# if [ "$should_log" = "-l" ] && [ -z "$logfile" ]
+# then
+  # if [ -z $POMLOG ]
+  # then
+    # logfile=$HOME/pom.log
+  # else
+    # logfile=$POMLOG
+  # fi
+# fi
+
+# if [ "$1" = "-h" ] || [ "$1" = "--help" ]
+# then
+  # print_help && exit 0
+# elif [ -z "$1" ]
+# then
+  # print_usage && exit 1
+# elif [ ! -z "$2" ] && [ "$2" != "-l" ]
+# then
+  # print_usage && exit 1
+# else
+  # run_main
+# fi
