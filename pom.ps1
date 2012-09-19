@@ -1,5 +1,8 @@
 param(
-	$message = $(throw("message required"))
+	$goal,
+	$shouldLog,
+	$POMLOG = $env:pomlog,
+	[switch]$h
 )
 
 #
@@ -23,7 +26,8 @@ param(
 # ported to powershell by @luv2code (Matthew Taylor) 2012-09-19
 
 # Runtime of a single session.
-$time_in_minutes=25
+$time_in_minutes = 25
+$script_name = $MyInvocation.MyCommand.Name
 
 
 # Print current status.
@@ -52,7 +56,8 @@ function finish {
 
   $break_msg="Pomadoro complete. Take a 5 minute break."
   echo $break_msg
-  safe_say "$break_msg" # || ring_bell
+  safe_say "$break_msg" 
+  ring_bell
 }
 
 # Audibly say something, if possible.
@@ -64,68 +69,64 @@ function safe_say($text) {
 	$synthesizer.Speak($text)
 
 }
-finish
-# # Try to ring the terminal bell.
-# function ring_bell {
-  # which -s tput && tput bel
-# }
 
-# # Print short version of help.
-# function print_usage {
-  # echo "Usage: $0 message [-l [logfile]]"
-# }
+# Try to ring the terminal bell.
+function ring_bell {
+  [Console]::Beep()
+}
 
-# # Print help.
-# function print_help {
-  # help_text='
-  # NAME
-      # pom -- a minimalist pomodoro-style time-tracker.
+# Print short version of help.
+function print_usage {
+  echo "Usage: $script_name message [-l [logfile]]"
+}
 
-  # SYNOPSIS
-      # pom message [-l [logfile]]
+# Print help.
+function print_help {
+  $help_text='
+  NAME
+      pom -- a minimalist pomodoro-style time-tracker.
 
-  # DESCRIPTION
-      # The pom utility counts down for 20 minutes as you work on a task. It will
-      # give an audible alert at 5 and 0 minutes if `say` is in the path and
-      # executable.
+  SYNOPSIS
+      pom message [-l [logfile]]
 
-      # -l [logfile]
-          # If provided, log the completed task and timestamp to [logfile]. The
-          # default is the POMLOG environment variable, if set. Otherwise, the
-          # default is $HOME/pom.log.
-# '
+  DESCRIPTION
+      The pom utility counts down for 20 minutes as you work on a task. It will
+      give an audible alert at 5 and 0 minutes if `say` is in the path and
+      executable.
 
-  # echo "$help_text"
-# }
+      -l [logfile]
+          If provided, log the completed task and timestamp to [logfile]. The
+          default is the POMLOG environment variable, if set. Otherwise, the
+          default is $HOME/pom.log.
+'
 
-# # Main function.
-# function run_main {
-  # for minute in `seq $time_in_minutes`
-  # do
-    # print_status $(($minute-1))
-    # sleep 60
-  # done
-  # finish
-# }
+  echo "$help_text"
+}
 
-# # Parse options, and run main.
-# goal=$1
-# should_log=$2
-# logfile=$3
-# if [ "$should_log" = "-l" ] && [ -z "$logfile" ]
-# then
-  # if [ -z $POMLOG ]
-  # then
-    # logfile=$HOME/pom.log
-  # else
-    # logfile=$POMLOG
-  # fi
-# fi
+# Main function.
+function run_main {
+  for($minute=1; $minute -le $time_in_minutes; $minute++){
+    print_status $(($minute))
+    Start-Sleep -s 60
+  }
+  finish
+}
 
-# if [ "$1" = "-h" ] || [ "$1" = "--help" ]
-# then
-  # print_help && exit 0
-# elif [ -z "$1" ]
+# Parse options, and run main.
+if ( $should_log -eq "-l" ) {
+  if(File-Exists($POMLOG)) {
+    $logfile=$POMLOG
+  } else {
+    $logfile=Path-Join($env:home, 'pom.log')
+  }
+}
+
+if($h -or $goal -eq "--help") {
+  print_help 
+  return 0
+} else {
+  run_main
+}
 # then
   # print_usage && exit 1
 # elif [ ! -z "$2" ] && [ "$2" != "-l" ]
