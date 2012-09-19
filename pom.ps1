@@ -125,11 +125,3 @@ if($h -or $goal -eq "--help") {
 } else {
   run_main
 }
-# then
-  # print_usage && exit 1
-# elif [ ! -z "$2" ] && [ "$2" != "-l" ]
-# then
-  # print_usage && exit 1
-# else
-  # run_main
-# fi
