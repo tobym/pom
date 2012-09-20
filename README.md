@@ -11,7 +11,7 @@ synopsis
 description
 -----------
 
-The pom utility counts down for 20 minutes as you work on a task. It will
+The pom utility counts down for 25 minutes as you work on a task. It will
 give an audible alert at 5 and 0 minutes if `say` is in the path and
 executable.
 
