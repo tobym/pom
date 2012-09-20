@@ -28,7 +28,7 @@ param(
 # Runtime of a single session.
 $time_in_minutes = 25
 $script_name = $MyInvocation.MyCommand.Name
-
+$has_speech = true
 
 # Print current status.
 # First argument is number of minutes elapsed.
@@ -60,12 +60,16 @@ function finish {
 
 # Audibly say something, if possible.
 function safe_say($text) {
-	Add-Type -AssemblyName System.Speech
-	$synthesizer = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
-
-	# This line converts the text to speech
-	$synthesizer.SpeakAsync($text)
-
+  if(has_speech) {
+    try{
+      Add-Type -AssemblyName System.Speech
+      $synthesizer = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
+      $synthesizer.SpeakAsync($text)
+    }
+    catch {
+      $has_speech = false
+    }
+  }
 }
 
 # Try to ring the terminal bell.
