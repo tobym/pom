@@ -28,7 +28,7 @@ param(
 # Runtime of a single session.
 $time_in_minutes = 25
 $script_name = $MyInvocation.MyCommand.Name
-$has_speech = true
+$has_speech = $true
 
 # Print current status.
 # First argument is number of minutes elapsed.
