@@ -60,7 +60,7 @@ function finish {
 
 # Audibly say something, if possible.
 function safe_say($text) {
-  if(has_speech) {
+  if($has_speech) {
     try{
       Add-Type -AssemblyName System.Speech
       $synthesizer = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
