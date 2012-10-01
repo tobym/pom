@@ -47,7 +47,7 @@ function finish {
     echo $msg >> $logfile
   fi
 
-  break_msg="Pomadoro complete. Take a 5 minute break."
+  break_msg="Pomodoro complete. Take a 5 minute break."
   echo $break_msg
   safe_say "$break_msg" || ring_bell
 }
