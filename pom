@@ -56,8 +56,9 @@ function finish {
 function safe_say {
   for cmd in espeak say
   do
-    which $cmd >/dev/null && $cmd "$1" 2>/dev/null && break
+    which $cmd >/dev/null && $cmd "$1" 2>/dev/null && return
   done
+  return 1
 }
 
 # Try to ring the terminal bell.
