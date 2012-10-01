@@ -54,7 +54,10 @@ function finish {
 
 # Audibly say something, if possible.
 function safe_say {
-  which -s say && say $1
+  for cmd in espeak say
+  do
+    which $cmd >/dev/null && $cmd "$1" 2>/dev/null && break
+  done
 }
 
 # Try to ring the terminal bell.
