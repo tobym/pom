@@ -32,7 +32,7 @@ function print_status {
 
   if [ $minutes_remaining = 5 ]
   then
-    safe_say "$minutes_remaining minutes remaining in your pomadoro"
+    safe_say "$minutes_remaining minutes remaining in your pomadoro" &
   fi
 }
 
