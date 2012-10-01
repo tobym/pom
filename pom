@@ -59,7 +59,7 @@ function safe_say {
 
 # Try to ring the terminal bell.
 function ring_bell {
-  which -s tput && tput bel
+  which tput >/dev/null && tput bel
 }
 
 # Print short version of help.
