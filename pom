@@ -32,7 +32,7 @@ function print_status {
 
   if [ $minutes_remaining = 5 ]
   then
-    safe_say "$minutes_remaining minutes remaining in your pomadoro"
+    safe_say "$minutes_remaining minutes remaining in your pomadoro" &
   fi
 }
 
@@ -47,19 +47,23 @@ function finish {
     echo $msg >> $logfile
   fi
 
-  break_msg="Pomadoro complete. Take a 5 minute break."
+  break_msg="Pomodoro complete. Take a 5 minute break."
   echo $break_msg
   safe_say "$break_msg" || ring_bell
 }
 
 # Audibly say something, if possible.
 function safe_say {
-  which -s say && say $1
+  for cmd in espeak say
+  do
+    which $cmd >/dev/null && $cmd "$1" 2>/dev/null && return
+  done
+  return 1
 }
 
 # Try to ring the terminal bell.
 function ring_bell {
-  which -s tput && tput bel
+  which tput >/dev/null && tput bel
 }
 
 # Print short version of help.
