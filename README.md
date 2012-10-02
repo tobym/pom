@@ -31,4 +31,4 @@ extras
 notes
 -----
 
-The PowerShell version is supported by [luv2code](https://github.com/luv2code).
+The PowerShell version is maintained by [luv2code](https://github.com/luv2code).
