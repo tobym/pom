@@ -31,4 +31,4 @@ extras
 notes
 -----
 
-The PowerShell version is not actively supported.
+The PowerShell version is supported by [luv2code](https://github.com/luv2code).
