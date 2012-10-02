@@ -12,8 +12,8 @@ description
 -----------
 
 The pom utility counts down for 25 minutes as you work on a task. It will
-give an audible alert at 5 and 0 minutes if `say` is in the path and
-executable.
+give an audible alert at 5 and 0 minutes if `say` or `espeak` is in the
+path and executable.
 
 `-l [logfile]`
     If provided, log the completed task and timestamp to `logfile`. The
@@ -27,3 +27,8 @@ extras
 2. Use `awk`/`grep` to add up time spent on projects, or for specific days.
 
         awk '/#hacks/ { total += $1 } END { print total / 60 " hours" }' pom.log
+
+notes
+-----
+
+The PowerShell version is not actively supported.
